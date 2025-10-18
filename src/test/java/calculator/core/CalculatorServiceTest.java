@@ -8,53 +8,72 @@ import org.junit.jupiter.api.Test;
 class CalculatorServiceTest {
 
     private CalculatorService calculatorService;
-    private String[] inputs;
-    private String[] customInputs;
 
     @BeforeEach
     void setUp() {
         calculatorService = new CalculatorService();
-        inputs = new String[]{
-                "1,2",
-                "1,2,3",
-                "1,2:3"
-        };
-        customInputs = new String[]{
-                "//;\\n1;2;3",
-                "1//;\\n2:3;4"
-        };
     }
 
     @Test
     void 요청_인자가_없을_경우_0을_반환한다() {
-        //When
-        int result = calculatorService.add("");
+        // When
+        String result = calculatorService.add("");
 
-        //Then
-        assertEquals(0, result);
+        // Then
+        assertEquals("결과 : 0", result);
     }
 
     @Test
-    void 쉼표_또는_클론_구분자로_문자열을_분리하고_합을_반환한다() {
-        //When
-        int result0 = calculatorService.add(inputs[0]);
-        int result1 = calculatorService.add(inputs[1]);
-        int result2 = calculatorService.add(inputs[2]);
+    void 쉼표로_구분된_숫자의_합을_반환한다() {
+        // When
+        String result = calculatorService.add("1,2");
 
-        //Then
-        assertEquals(3, result0);
-        assertEquals(6, result1);
-        assertEquals(6, result2);
+        // Then
+        assertEquals("결과 : 3", result);
+    }
+
+    @Test
+    void 콜론으로_구분된_숫자의_합을_반환한다() {
+        // When
+        String result = calculatorService.add("1:2");
+
+        // Then
+        assertEquals("결과 : 3", result);
+    }
+
+    @Test
+    void 쉼표와_콜론이_섞여있는_숫자의_합을_반환한다() {
+        // When
+        String result = calculatorService.add("1,2:3");
+
+        // Then
+        assertEquals("결과 : 6", result);
     }
 
     @Test
     void 커스텀_구분자로_문자열을_분리하고_합을_반환한다() {
-        //When
-        int result0 = calculatorService.add(customInputs[0]);
-        int result1 = calculatorService.add(customInputs[1]);
+        // When
+        String result = calculatorService.add("//;\\n1;2;3");
+        String result1 = calculatorService.add("1//;\\n2:3;4");
 
-        //Then
-        assertEquals(6, result0);
-        assertEquals(10, result1);
+        // Then
+        assertEquals("결과 : 6", result);
+        assertEquals("결과 : 10", result1);
+    }
+
+    @Test
+    void 구분자로_입력된_문자열이_아닐_경우_잘못된_값으로_예외를_던진다() {
+        // When & Then
+        assertThrows(IllegalArgumentException.class,
+                () -> calculatorService.add("1;2"));
+        assertThrows(IllegalArgumentException.class,
+                () -> calculatorService.add("a:2:b"));
+    }
+
+    @Test
+    void 음수가_포함되면_예외를_던진다() {
+        //When & Then
+        assertThrows(IllegalArgumentException.class,
+                () -> calculatorService.add("-1,2"));
     }
 }

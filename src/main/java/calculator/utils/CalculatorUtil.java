@@ -6,14 +6,14 @@ import java.util.regex.Pattern;
 public class CalculatorUtil {
     private CalculatorUtil() { }
 
-    public static int sumDelimitedNumbers(String input) {
+    public static String sumDelimitedNumbers(String input) {
         String[] numbers;
         if (input.contains("//") && input.contains("\\n")) {
             numbers = customSplit(input);
         } else {
             numbers = defaultSplit(input);
         }
-        return sum(numbers);
+        return "결과 : " + sum(numbers);
     }
 
     private static String[] defaultSplit(String input) {
@@ -34,6 +34,9 @@ public class CalculatorUtil {
     private static int sum(String[] numbers) {
         return Arrays.stream(numbers)
                 .filter(num -> !num.isEmpty())
+                .peek(num -> {
+                    if(Integer.parseInt(num) < 0) throw new IllegalArgumentException();
+                })
                 .mapToInt(Integer::parseInt)
                 .sum();
     }

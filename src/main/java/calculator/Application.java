@@ -6,7 +6,7 @@ import camp.nextstep.edu.missionutils.Console;
 public class Application {
     public static void main(String[] args) {
         var service = new CalculatorService();
-        int result = service.add(Console.readLine());
+        String result = service.add(Console.readLine());
         System.out.println(result);
     }
 }

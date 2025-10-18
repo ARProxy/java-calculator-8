@@ -3,11 +3,15 @@ package calculator.core;
 import calculator.utils.CalculatorUtil;
 
 public class CalculatorService {
-    public int add(String input) {
+    public String add(String input) {
         if (input.isBlank()) {
-            return 0;
+            return "결과 : 0";
         }
 
-        return CalculatorUtil.sumDelimitedNumbers(input);
+        try {
+            return CalculatorUtil.sumDelimitedNumbers(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException();
+        }
     }
 }
